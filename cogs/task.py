@@ -1,6 +1,7 @@
 import discord
 import csv
 import shutil
+import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 from discord.ext import commands, tasks
@@ -9,8 +10,11 @@ class Tasks(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.modhubScrapper.start()
+        print('Task modhubScrapper started')
         self.modListScrapper.start()
+        print('Task modListScrapper started')
         self.loopTaskUtentiSqualificati.start()
+        print('Task loopTaskUtentiSqualificati started')
 
     @tasks.loop(seconds=60)
     async def loopTaskUtentiSqualificati(self):
