@@ -41,6 +41,29 @@ class Aziende(commands.Cog):
                     pass
         await ctx.send(text)
 
+    @commands.command(help='Riordina le farm in ordine alfabetico')
+    async def reorder(self, ctx):
+        client = self.client
+        server = client.get_guild(419080385989967872)
+        channels = await server.fetch_channels()
+        farms = []
+        initPos = None
+        for channel in channels:
+            channel = client.get_channel(channel.id)
+            if str(channel.category) == 'Le vostre aziende':
+                if not str(channel.name) == 'informazioni':
+                    farms.append(channel.name)
+                    if initPos == None:
+                        initPos = int(channel.position)
+        farms.sort()
+        c = 0
+        for i in farms:
+            channel = discord.utils.get(channels, name=i)
+            pos = initPos + c
+            await channel.edit(position=pos)
+            c += 1
+        await ctx.send('Canali riordinati in ordine alfabetico!')
+
     @commands.command()
     async def test(self, ctx):
         client = self.client

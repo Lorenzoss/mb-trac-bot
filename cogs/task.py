@@ -6,6 +6,7 @@ import pyshorteners
 from bs4 import BeautifulSoup
 from datetime import datetime
 from discord.ext import commands, tasks
+from discord.utils import get
 
 newModsMsg = None
 
@@ -22,20 +23,16 @@ class Tasks(commands.Cog):
     @tasks.loop(seconds=60)
     async def loopTaskUtentiSqualificati(self):
         client = self.client
-        with open('screenContest/utentiSqualificati.csv', mode='r', encoding='cp1252') as f:
-            utentiSqualificati = csv.reader(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-            for row in utentiSqualificati:
-                if int(row[1]) <= 60:
-                    server = client.get_guild(419080385989967872)
-                    member = server.get_member(int(row[0]))
-                    role = get(server.roles, name='Squalificato')
-                    await member.remove_roles(role, reason='Sono passati 7 giorni')
         with open('screenContest/utentiSqualificati.csv', mode='r', encoding='cp1252') as csvfile:
             reader = csv.reader(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
             with open('temp/tempUtentiSqualificati.csv', mode='w', newline='', encoding='cp1252') as temp:
                 writer = csv.writer(temp, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
                 for row in reader:
                     if int(row[1]) <= 60:
+                        server = client.get_guild(419080385989967872)
+                        member = server.get_member(int(row[0]))
+                        role = get(server.roles, name='Squalificato')
+                        await member.remove_roles(role, reason='Sono passati 7 giorni')
                         pass
                     else:
                         writer.writerow([row[0],str(int(row[1])-60)])
